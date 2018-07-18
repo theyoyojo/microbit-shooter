@@ -1,0 +1,12 @@
+{
+  "name": "microbit-shooter",
+  "version": "0.0.0",
+  "bin": "./source",
+  "private": true,
+  "description": "Shooter client for a little game",
+  "author": "Joel Savitz",
+  "license": "GNU GPLv3+",
+  "dependencies": {
+    "microbit": "lancaster-university/microbit"
+  }
+}
