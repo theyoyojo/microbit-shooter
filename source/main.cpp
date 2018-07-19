@@ -40,33 +40,67 @@ DEALINGS IN THE SOFTWARE.
 
 ECG::Debug db ;
 
-
 ECG::Core core;
 
-ECG::Animator a ;
-ECG::Animator b ;
 
 MicroBitButton buttonA(MICROBIT_PIN_BUTTON_A,MICROBIT_ID_BUTTON_A) ;
 MicroBitButton buttonB(MICROBIT_PIN_BUTTON_B,MICROBIT_ID_BUTTON_B) ;
 
-void onButtonADown(MicroBitEvent e) {
+
+ECG::Radio r ;
+
+class A {
+    public:
+
+    A(ECG::Animator& refA, ECG::Animator& refB) ;
+
+    ECG::Animator& a;
+    ECG::Animator& b;
+
+    void onButtonADown(MicroBitEvent e) ;
+    void onButtonBDown(MicroBitEvent e) ;
+} ; // Class A (test class)
+
+A::A(ECG::Animator& refA, ECG::Animator& refB) : a(refA), b(refB) {
+    core.listen(MICROBIT_ID_BUTTON_A, MICROBIT_BUTTON_EVT_DOWN, this, &A::onButtonADown) ;
+    core.listen(MICROBIT_ID_BUTTON_B, MICROBIT_BUTTON_EVT_DOWN, this, &A::onButtonBDown) ;
+}
+
+void A::onButtonADown(MicroBitEvent e) {
     db.dump("in onButtonADown") ;
     db.valueof(a.getSize()) ;
+    PacketBuffer p(1) ;
+    p[0] = 'j' ;
+    r.broadcast(p) ;
     a() ;
 }
 
-void onButtonBDown(MicroBitEvent e) {
+void A::onButtonBDown(MicroBitEvent e) {
     db.dump("in onButtonBDown") ;
     db.valueof(b.getSize()) ;
     b() ;
+    r.recv_next() ;
+    PacketBuffer p = r.download() ;
+    //db.valueof(p[0]) ;
+    db.dump("%d",p[0]) ;
 }
+
+ECG::Animator a;
+ECG::Animator b;
+
 int main() {
 
     db.dump("begin main.") ;
 
+    A test(a, b) ;
 
-    core.listen(MICROBIT_ID_BUTTON_A, MICROBIT_BUTTON_EVT_DOWN, onButtonADown) ;
-    core.listen(MICROBIT_ID_BUTTON_B, MICROBIT_BUTTON_EVT_DOWN, onButtonBDown) ;
+    /*
+    auto ptrA = new ECG::Animator ;
+    auto ptrB = new ECG::Animator ;
+
+    ECG::Animator& a = *ptrA ;
+    ECG::Animator& b = *ptrB ;
+    */
 
     a << ECG::Images::centerRing << ECG::Images::middleRing << ECG::Images::outerRing ;
 

@@ -29,6 +29,7 @@ DEALINGS IN THE SOFTWARE.
     TODO:
         -- flesh out animator implementation first
         -- like animator, but with text strings (ManagedString is best option)
+
 */
 
 #endif // WRITER_H

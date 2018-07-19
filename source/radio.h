@@ -25,6 +25,9 @@ DEALINGS IN THE SOFTWARE.
 #ifndef RADIO_H
 #define RADIO_H
 
+#include <queue>
+#include "PacketBuffer.h"
+
 // @note Inclusion of this file disables bluetooth
 
 // Disable bluetooth to enable radio
@@ -34,7 +37,49 @@ namespace ECG {
 
 class Radio {
 
-    // TODO:
+    std::queue<PacketBuffer> _packetsIn ;
+
+    std::queue<PacketBuffer> _packetsOut ;
+    
+public:
+
+    /**
+      * Default constructor
+      */
+    Radio() ;
+
+    /**
+      * Load waiting packets into object buffer
+      * 
+      * @return: number of packets processed
+      */
+    int recv_all() ;
+    int recv_next() ;
+     
+    /**
+      * Send waiting packets over radio
+      * 
+      * @return: number of packets processed
+      */
+    int send_all() ;
+    int send_next() ;
+
+    /**
+      * Send a packet to the outgoing queue
+      */
+    void upload(PacketBuffer& p) ;
+    
+    /**
+      * Upload and send a packet
+      * 
+      * @return: number of packets processed
+      */
+    int broadcast(PacketBuffer& p) ;
+
+    /**
+      * Get the next packet from the incomming queue
+      */
+    PacketBuffer download() ;
 
 } ; // class Radio
 

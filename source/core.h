@@ -25,6 +25,8 @@ DEALINGS IN THE SOFTWARE.
 #ifndef CORE_H
 #define CORE_H "core.h"
 
+#include "MicroBitMessageBus.h"
+
 
 /* TODO: A home for some core utilities of any useful microbit program
     --Fiber
@@ -34,12 +36,15 @@ DEALINGS IN THE SOFTWARE.
 
 #include "MicroBitEvent.h"
 
+// The reason for the name is the fact of this being written for a school
 
 namespace ECG {
 
 class Core {
 
 public:
+
+    static MicroBitMessageBus schoolbus ;
 
     /**
       * Default constructor. Initializes the scheduler, message bus, and heap allocator
@@ -59,6 +64,11 @@ public:
     void abandon_thread() ;
 
     void listen(uint16_t id, uint16_t value, void (*handler)(MicroBitEvent)) ;
+
+    template <typename T>
+    void listen(uint16_t id, uint16_t value, T* object, void (T::* handler)(MicroBitEvent) ) {
+        schoolbus.listen(id, value, object, handler);
+    }
 
 } ; // class Core
 

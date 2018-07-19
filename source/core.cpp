@@ -29,14 +29,13 @@ DEALINGS IN THE SOFTWARE.
 using namespace ECG ;
 
 #include "MicroBitFiber.h"
-#include "MicroBitMessageBus.h"
 #include "MicroBitHeapAllocator.h"
 #include "MicroBitEvent.h"
 
 Debug cdb ;
 
-// The reason for the name is the fact of this being written for a school
-MicroBitMessageBus schoolbus ;
+MicroBitMessageBus Core::schoolbus ;
+
 
 Core::Core() {
     cdb.dump("core constructor called") ;
