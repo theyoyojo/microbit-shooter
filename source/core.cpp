@@ -32,29 +32,8 @@ using namespace ECG ;
 #include "MicroBitMessageBus.h"
 #include "MicroBitHeapAllocator.h"
 #include "MicroBitEvent.h"
-#include "MicroBitButton.h"
-#include "animator.h"
-#include "images.h"
 
 Debug cdb ;
-
-MicroBitButton buttonA(MICROBIT_PIN_BUTTON_A,MICROBIT_ID_BUTTON_A) ;
-MicroBitButton buttonB(MICROBIT_PIN_BUTTON_B,MICROBIT_ID_BUTTON_B) ;
-
-ECG::Animator a ;
-ECG::Animator b ;
-
-void onButtonADown(MicroBitEvent e) {
-    cdb.dump("in onButtonADown") ;
-    cdb.valueof(a.getSize()) ;
-    a() ;
-}
-
-void onButtonBDown(MicroBitEvent e) {
-    cdb.dump("in onButtonBDown") ;
-    cdb.valueof(b.getSize()) ;
-    b() ;
-}
 
 // The reason for the name is the fact of this being written for a school
 MicroBitMessageBus schoolbus ;
@@ -70,13 +49,7 @@ Core::Core() {
 
     cdb.dump("core constructed.") ;
 
-    listen(MICROBIT_ID_BUTTON_A, MICROBIT_BUTTON_EVT_DOWN, onButtonADown) ;
-    listen(MICROBIT_ID_BUTTON_B, MICROBIT_BUTTON_EVT_DOWN, onButtonBDown) ;
 
-    a << ECG::Images::centerRing << ECG::Images::middleRing << ECG::Images::outerRing ;
-
-    // add elements from animation a to animation b in a speficied order
-    b << a[2] << a[1] << a[0] ;
 }
 
 void Core::sleep(unsigned long ms) {
@@ -84,9 +57,7 @@ void Core::sleep(unsigned long ms) {
 }
 
 void Core::abandon_thread() {
-    cdb.dump("about to call release_fiber...") ;
     release_fiber() ;
-    cdb.dump("post fiber release(should not get here tbh)") ;
 }
 
 void Core::listen(uint16_t id, uint16_t value, void (*handler)(MicroBitEvent)) {

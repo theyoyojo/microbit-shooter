@@ -34,6 +34,7 @@ DEALINGS IN THE SOFTWARE.
 
 #include "MicroBitEvent.h"
 
+
 namespace ECG {
 
 class Core {

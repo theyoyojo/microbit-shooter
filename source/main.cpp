@@ -43,17 +43,37 @@ ECG::Debug db ;
 
 ECG::Core core;
 
+ECG::Animator a ;
+ECG::Animator b ;
+
+MicroBitButton buttonA(MICROBIT_PIN_BUTTON_A,MICROBIT_ID_BUTTON_A) ;
+MicroBitButton buttonB(MICROBIT_PIN_BUTTON_B,MICROBIT_ID_BUTTON_B) ;
+
+void onButtonADown(MicroBitEvent e) {
+    db.dump("in onButtonADown") ;
+    db.valueof(a.getSize()) ;
+    a() ;
+}
+
+void onButtonBDown(MicroBitEvent e) {
+    db.dump("in onButtonBDown") ;
+    db.valueof(b.getSize()) ;
+    b() ;
+}
 int main() {
 
     db.dump("begin main.") ;
 
 
+    core.listen(MICROBIT_ID_BUTTON_A, MICROBIT_BUTTON_EVT_DOWN, onButtonADown) ;
+    core.listen(MICROBIT_ID_BUTTON_B, MICROBIT_BUTTON_EVT_DOWN, onButtonBDown) ;
 
+    a << ECG::Images::centerRing << ECG::Images::middleRing << ECG::Images::outerRing ;
 
-    // copy contents of animation a to animation b
-    //b = a ;
+    // add elements from animation a to animation b in a speficied order
+    b << a[2] << a[1] << a[0] ;
 
-    db.dump("aboutta release") ;
+    db.dump("about to abandon main thread") ;
 
     core.abandon_thread() ;
 
