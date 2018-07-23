@@ -36,12 +36,15 @@ DEALINGS IN THE SOFTWARE.
 #include "animator.h"
 #include "images.h" 
 
+#include "MicroBitDisplay.h"
+
 #include "MicroBitButton.h"
 
 ECG::Debug db ;
 
 ECG::Core core;
 
+MicroBitDisplay disp ;
 
 MicroBitButton buttonA(MICROBIT_PIN_BUTTON_A,MICROBIT_ID_BUTTON_A) ;
 MicroBitButton buttonB(MICROBIT_PIN_BUTTON_B,MICROBIT_ID_BUTTON_B) ;
@@ -52,16 +55,17 @@ ECG::Radio r ;
 class A {
     public:
 
-    A(ECG::Animator& refA, ECG::Animator& refB) ;
+    A() ;
 
-    ECG::Animator& a;
-    ECG::Animator& b;
+    ECG::Animator a;
+    ECG::Animator b;
 
     void onButtonADown(MicroBitEvent e) ;
     void onButtonBDown(MicroBitEvent e) ;
+
 } ; // Class A (test class)
 
-A::A(ECG::Animator& refA, ECG::Animator& refB) : a(refA), b(refB) {
+A::A() {
     core.listen(MICROBIT_ID_BUTTON_A, MICROBIT_BUTTON_EVT_DOWN, this, &A::onButtonADown) ;
     core.listen(MICROBIT_ID_BUTTON_B, MICROBIT_BUTTON_EVT_DOWN, this, &A::onButtonBDown) ;
 }
@@ -70,9 +74,11 @@ void A::onButtonADown(MicroBitEvent e) {
     db.dump("in onButtonADown") ;
     db.valueof(a.getSize()) ;
     PacketBuffer p(1) ;
-    p[0] = 'j' ;
+    p[0] = 'j' ; // 'j' == 106 <==> true
     r.broadcast(p) ;
+    db.dump("returned from broadcast") ;
     a() ;
+    db.dump("Called the animation of a") ;
 }
 
 void A::onButtonBDown(MicroBitEvent e) {
@@ -81,18 +87,17 @@ void A::onButtonBDown(MicroBitEvent e) {
     b() ;
     r.recv_next() ;
     PacketBuffer p = r.download() ;
-    //db.valueof(p[0]) ;
-    db.dump("%d",p[0]) ;
+    db.valueof(p[0]) ;
+    //db.dump("%d",p[0]) ;
 }
-
-ECG::Animator a;
-ECG::Animator b;
 
 int main() {
 
     db.dump("begin main.") ;
 
-    A test(a, b) ;
+    A test ;
+
+    db.dump("hello") ;
 
     /*
     auto ptrA = new ECG::Animator ;
@@ -102,10 +107,12 @@ int main() {
     ECG::Animator& b = *ptrB ;
     */
 
-    a << ECG::Images::centerRing << ECG::Images::middleRing << ECG::Images::outerRing ;
+    test.a << ECG::Images::centerRing << ECG::Images::middleRing << ECG::Images::outerRing ;
 
     // add elements from animation a to animation b in a speficied order
-    b << a[2] << a[1] << a[0] ;
+    test.b << test.a[2] << test.a[1] << test.a[0] ;
+
+    disp.print(test.a[2]) ;
 
     db.dump("about to abandon main thread") ;
 

@@ -24,10 +24,15 @@ DEALINGS IN THE SOFTWARE.
 
 #include "animator.h"
 
+#include "debug.h"
+
+
 #include "MicroBitDisplay.h"
 #include "MicroBitFiber.h"
 
 using namespace ECG ;
+
+Debug adb ;
 
 #define DEFAULT_ANIMATION_DIRECTION FORWARD
 #define DEFAULT_ANIMATION_DELAY 100
@@ -47,6 +52,7 @@ const MicroBitImage& Animator::blankImage((ImageData*)blank_arr) ;
 
 Animator::Animator() {
     // Nothing to be done here...
+    _images.clear() ;
 }
 
 Animator::Animator(std::vector<MicroBitImage>& images) {
@@ -93,9 +99,14 @@ void Animator::animate(int msDelay = DEFAULT_ANIMATION_DELAY, D1_direction direc
     }
     // Case: animate forwards
     else if (direction == FORWARD) {
+        a.dump
+        adb.dump("called animator > forward") ;
         for(auto img = _images.begin(); img != _images.end(); img++) {
+            adb.dump("iteration of print animation") ;
             display.print(*img) ;
+            adb.dump("Printed, now will delay...") ;
             fiber_sleep(msDelay) ;
+            adb.dump("End of first iteration") ;
         }
     }
     // Case: animate backwards
@@ -154,6 +165,7 @@ size_t Animator::getSize() {
 }
 
 void Animator::operator () () {
+    
     animate(DEFAULT_ANIMATION_DELAY,DEFAULT_ANIMATION_DIRECTION) ;
 }
 

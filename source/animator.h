@@ -58,6 +58,11 @@ namespace ECG {
 
 class Animator {
 
+    /* TODO:
+      -- consider an upgrade to a universal animator
+      -- std::map<std::string,std::vector<MicroBitImage>> as internal data type
+    */
+
     // The images known to the animator
     std::vector<MicroBitImage> _images;
 

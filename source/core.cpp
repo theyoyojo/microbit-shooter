@@ -24,30 +24,23 @@ DEALINGS IN THE SOFTWARE.
 
 #include "core.h"
 
-#include "debug.h"
-
 using namespace ECG ;
 
 #include "MicroBitFiber.h"
 #include "MicroBitHeapAllocator.h"
 #include "MicroBitEvent.h"
 
-Debug cdb ;
 
 MicroBitMessageBus Core::schoolbus ;
 
 
 Core::Core() {
-    cdb.dump("core constructor called") ;
 
     // The schoolbus must run on time
     scheduler_init(schoolbus) ;
 
     // Free up space usually taken up by bluetooth stack (this library does not use it right now)
     microbit_create_heap(MICROBIT_SD_GATT_TABLE_START + MICROBIT_SD_GATT_TABLE_SIZE, MICROBIT_SD_LIMIT) ;
-
-    cdb.dump("core constructed.") ;
-
 
 }
 
@@ -61,5 +54,4 @@ void Core::abandon_thread() {
 
 void Core::listen(uint16_t id, uint16_t value, void (*handler)(MicroBitEvent)) {
     schoolbus.listen(id, value, handler) ;
-    cdb.dump("listener wrapper terminating") ;
 }

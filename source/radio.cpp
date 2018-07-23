@@ -4,7 +4,6 @@
 
 MicroBitRadio radio ;
 
-
 using namespace ECG ;
 
 Radio::Radio() {
