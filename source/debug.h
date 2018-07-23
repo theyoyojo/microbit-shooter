@@ -32,7 +32,7 @@ DEALINGS IN THE SOFTWARE.
 #define VARNAME(x) #x
 #define valueof(x) dump(x,VARNAME(x)) ;
 
-#define DB_BUFFSZ 1024
+#define DB_BUFFSZ 256
 
 namespace ECG {
 
