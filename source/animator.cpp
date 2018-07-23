@@ -99,7 +99,6 @@ void Animator::animate(int msDelay = DEFAULT_ANIMATION_DELAY, D1_direction direc
     }
     // Case: animate forwards
     else if (direction == FORWARD) {
-        a.dump
         adb.dump("called animator > forward") ;
         for(auto img = _images.begin(); img != _images.end(); img++) {
             adb.dump("iteration of print animation") ;
